@@ -146,10 +146,10 @@ print("Web Page Open")
 print("SCAN YOUR QR CODE FOR WHATSAPP WEB")
 while True:
     time.sleep(1) 
-    SUB1000Sys1 = host.ping("192.168.1.151")
-    SUB1000Sys2 = host.ping("192.168.1.152")
+    SUB1000Sys1 = host.ping("192.168.1.151") + host.ping("192.168.1.151") + host.ping("192.168.1.151")
+    SUB1000Sys2 = host.ping("192.168.1.152") + host.ping("192.168.1.152") + host.ping("192.168.1.152")
     
-    if SUB1000Sys1 != 0:
+    if SUB1000Sys1 == 3:
         message = ['Houston, we have a problem with SUB1000Sys1']
         print('problem 1')
         whatsapp_login()
@@ -157,7 +157,7 @@ while True:
         browser.quit()
         time.sleep(30)
         
-    if SUB1000Sys2 != 0:
+    if SUB1000Sys2 == 3:
         message = ['Houston, we have a problem with SUB1000Sys2']
         print('problem 2')
         whatsapp_login()

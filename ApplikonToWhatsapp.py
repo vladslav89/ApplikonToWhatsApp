@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
+from PIL import Image, ImageGrab
 try:
     import autoit
 except ModuleNotFoundError:
@@ -17,13 +18,13 @@ import os
 from ping_cmd import host
 
 browser = None
-Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"']
-message = ['Hi']
+Contact = ['"' + 'УБ' + '"']
+message = " "
 Link = "https://web.whatsapp.com/"
 wait = None
 choice = "no"
-docChoice = "no"
-doc_filename = None
+docChoice = "yes"
+doc_filename = "screen.bmp"
 
 
 
@@ -82,17 +83,17 @@ def send_attachment():
 
     # After 5am and before 11am scheduled this.
     if(hour >= 5 and hour <= 11):
-        image_path = os.getcwd() + "\\Media\\" + 'goodmorning.jpg'
+        image_path = os.getcwd() + 'goodmorning.jpg'
     # After 9pm and before 11pm schedule this
     elif (hour >= 21 and hour <= 23):
-        image_path = os.getcwd() + "\\Media\\" + 'goodnight.jpg'
+        image_path = os.getcwd() + 'goodnight.jpg'
     else:  # At any other time schedule this.
-        image_path = os.getcwd() + "\\Media\\" + 'howareyou.jpg'
+        image_path = os.getcwd() + 'howareyou.jpg'
     # print(image_path)
 
-    autoit.control_focus("Open", "Edit1")
-    autoit.control_set_text("Open", "Edit1", (image_path))
-    autoit.control_click("Open", "Button1")
+    autoit.control_focus("Открыть", "Edit1")
+    autoit.control_set_text("Открыть", "Edit1", (image_path))
+    autoit.control_click("Открыть", "Button1")
 
     time.sleep(3)
     whatsapp_send_button = browser.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div')
@@ -103,6 +104,7 @@ def send_attachment():
 
 def send_files():
     global doc_filename
+        
     # Attachment Drop Down Menu
     clipButton = browser.find_element_by_xpath('//*[@id="main"]/header/div[3]/div/div[2]/div/span')
     clipButton.click()
@@ -113,11 +115,11 @@ def send_files():
     docButton.click()
     time.sleep(1)
 
-    docPath = os.getcwd() + "\\Documents\\" + doc_filename
+    docPath = os.getcwd() + "\\" + doc_filename
 
-    autoit.control_focus("Open", "Edit1")
-    autoit.control_set_text("Open", "Edit1", (docPath))
-    autoit.control_click("Open", "Button1")
+    autoit.control_focus("Открыть", "Edit1")
+    autoit.control_set_text("Открыть", "Edit1", (docPath))
+    autoit.control_click("Открыть", "Button1")
 
     time.sleep(3)
     whatsapp_send_button = browser.find_element_by_xpath('//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div')
@@ -141,15 +143,46 @@ def sender():
                 print('Files not sent')
     time.sleep(5)
 
+
+def screenshot_sender():
+    global Contact, choice, docChoice, message
+    Contact = ['"' + 'УБ' + '"']
+    message = " "
+    try:
+        img = ImageGrab.grab( )
+        img.save("screen.bmp", "BMP")
+    except Exception:
+        Contact = ['"' + 'Муж' + '"']
+        message = ['Кто-то пользовался удаленкой']
+        print('RDP problem')            
+    
+    time.sleep(5)
+    whatsapp_login()
+    for i in Contact:
+        send_message(i)
+        print("Message sent to ", i)
+        try:
+            send_files()
+        except:
+            print('Files not sent')
+    time.sleep(5)
+    browser.quit()
+
+    
+
     
 print("Web Page Open")
 print("SCAN YOUR QR CODE FOR WHATSAPP WEB")
+
+schedule.every(30).minutes.do(screenshot_sender,)
+
 while True:
-    time.sleep(1) 
+     
     SUB1000Sys1 = host.ping("192.168.1.151") + host.ping("192.168.1.151") + host.ping("192.168.1.151")
     SUB1000Sys2 = host.ping("192.168.1.152") + host.ping("192.168.1.152") + host.ping("192.168.1.152")
     
     if SUB1000Sys1 == 3:
+        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"']
         message = ['Houston, we have a problem with SUB1000Sys1']
         print('problem 1')
         whatsapp_login()
@@ -158,14 +191,17 @@ while True:
         time.sleep(30)
         
     if SUB1000Sys2 == 3:
+        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"']
         message = ['Houston, we have a problem with SUB1000Sys2']
         print('problem 2')
         whatsapp_login()
         sender()
         browser.quit()
         time.sleep(30)
-
-
+        
+    
+    schedule.run_pending()
+    time.sleep(1)
 
 
 

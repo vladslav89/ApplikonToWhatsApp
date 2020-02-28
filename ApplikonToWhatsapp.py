@@ -19,12 +19,13 @@ from ping_cmd import host
 
 browser = None
 Contact = ['"' + 'УБ' + '"']
-message = " "
+message = None
 Link = "https://web.whatsapp.com/"
 wait = None
 choice = "no"
 docChoice = "yes"
 doc_filename = "screen.bmp"
+
 
 
 
@@ -65,6 +66,7 @@ def send_message(target):
         print("Message sent successfuly")
         time.sleep(1)
     except NoSuchElementException:
+        print('No such element')
         return
 
 
@@ -139,65 +141,85 @@ def sender():
         if(docChoice == "yes"):
             try:
                 send_files()
+                print('File sent')
             except:
-                print('Files not sent')
+                print('File not sent')
     time.sleep(5)
 
 
 def screenshot_sender():
-    global Contact, choice, docChoice, message
+    global Contact, docChoice, message
     Contact = ['"' + 'УБ' + '"']
-    message = " "
+    message = [' ']
     try:
         img = ImageGrab.grab( )
         img.save("screen.bmp", "BMP")
+        docChoice = "yes"
     except Exception:
         Contact = ['"' + 'Муж' + '"']
         message = ['Кто-то пользовался удаленкой']
         print('RDP problem')            
-    
+        docChoice = "no"
     time.sleep(5)
     whatsapp_login()
     for i in Contact:
         send_message(i)
         print("Message sent to ", i)
-        try:
-            send_files()
-        except:
-            print('Files not sent')
+        if(docChoice == "yes"):
+            try:
+                send_files()
+                print('File sent')
+            except:
+                print('File not sent')
     time.sleep(5)
-    browser.quit()
+    browser.close()
 
     
+SUB100Sys1 = 0
+SUB100Sys2 = 0
+SUB1000Sys1 = 0
+SUB1000Sys2 = 0
+SUB1000Sys3 = 0
+time.sleep(10)
 
-    
 print("Web Page Open")
 print("SCAN YOUR QR CODE FOR WHATSAPP WEB")
-
+screenshot_sender()
 schedule.every(30).minutes.do(screenshot_sender,)
 
 while True:
      
     SUB1000Sys1 = host.ping("192.168.1.151") + host.ping("192.168.1.151") + host.ping("192.168.1.151")
     SUB1000Sys2 = host.ping("192.168.1.152") + host.ping("192.168.1.152") + host.ping("192.168.1.152")
+    SUB1000Sys3 = host.ping("192.168.1.153") + host.ping("192.168.1.153") + host.ping("192.168.1.153")
+    SUB100Sys1 = host.ping("192.168.1.154") + host.ping("192.168.1.154") + host.ping("192.168.1.154")
     
     if SUB1000Sys1 == 3:
-        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"']
+        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"', '"' + 'Степан' + '"', '"' + 'Яна' + '"', '"' + 'Рома Омвт' + '"']
         message = ['Houston, we have a problem with SUB1000Sys1']
         print('problem 1')
         whatsapp_login()
         sender()
-        browser.quit()
+        browser.close()
         time.sleep(30)
-        
+            
     if SUB1000Sys2 == 3:
-        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"']
+        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"', '"' + 'Степан' + '"', '"' + 'Яна' + '"', '"' + 'Рома Омвт' + '"']
         message = ['Houston, we have a problem with SUB1000Sys2']
         print('problem 2')
         whatsapp_login()
         sender()
-        browser.quit()
+        browser.close()
         time.sleep(30)
+
+    if SUB100Sys1 == 3:
+        Contact = ['"' + 'Муж' + '"', '"' + 'Серега Синюгин' + '"', '"' + 'Степан' + '"', '"' + 'Яна' + '"', '"' + 'Рома Омвт' + '"']
+        message = ['Houston, we have a problem with SUB100Sys1']
+        print('problem 4')
+        whatsapp_login()
+        sender()
+        browser.close()
+        time.sleep(30)   
         
     
     schedule.run_pending()
